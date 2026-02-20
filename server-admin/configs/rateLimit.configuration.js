@@ -2,7 +2,7 @@ import rateLimit from "express-rate-limit";
 
 export const requestLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 40,
+    max: 5,
     standardHeaders: true,
     handler: (req, res) => {
         console.log(`Peticiones excedidas desde IP: ${req.ip}, Endpoint: ${req.path}`)
