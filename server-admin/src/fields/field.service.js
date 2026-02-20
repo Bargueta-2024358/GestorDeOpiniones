@@ -1,7 +1,7 @@
-import Publication from './publication.model.js';
+import Field from './field.model.js';
 import { cloudinary } from '../../middlewares/file-uploader.js';
 
-export const fetchPublications = async ({
+export const fetchFields = async ({
   page = 1,
   limit = 10,
   isActive = true,
@@ -10,16 +10,16 @@ export const fetchPublications = async ({
   const pageNumber = parseInt(page);
   const limitNumber = parseInt(limit);
 
-  const publications = await Publication.find(filter)
+  const fields = await Field.find(filter)
     .limit(limitNumber * 1)
     .skip((pageNumber - 1) * limitNumber)
     .sort({ createdAt: -1 });
 
-  const total = await Publication.countDocuments(filter);
+  const total = await Field.countDocuments(filter);
 
   return {
-    publications,
-    pagination:{
+    fields,
+    pagination: {
       currentPage: page,
       totalPages: Math.ceil(total / limit),
       totalRecords: total,
@@ -28,36 +28,36 @@ export const fetchPublications = async ({
   };
 };
 
-export const fetchPublicationById= async (id) => {
-  return Publication.findById(id);
+export const fetchFieldById = async (id) => {
+  return Field.findById(id);
 };
 
-export const createPublicationRecord = async ({ publicationData, file }) => {
-  const data = { ...publicationData };
+export const createFieldRecord = async ({ fieldData, file }) => {
+  const data = { ...fieldData };
 
   if (file) {
     const extension = file.path.split('.').pop();
     const filename = file.filename;
-    const relativePath = filename.substring(filename.indexOf('publications/'));
+    const relativePath = filename.substring(filename.indexOf('fields/'));
 
     data.photo = `${relativePath}.${extension}`;
   } else {
-    data.photo = 'publications/kinal_sports_nyvxo5';
+    data.photo = 'fields/kinal_sports_nyvxo5';
   }
 
-  const publication = new Publication(data);
-  await publication.save();
-  return publication;
+  const field = new Field(data);
+  await field.save();
+  return field;
 };
 
-export const updatePublicationRecord = async ({ id, updateData, file }) => {
+export const updateFieldRecord = async ({ id, updateData, file }) => {
   const data = { ...updateData };
 
   if (file) {
-    const currentPublication = await Publication.findById(id);
+    const currentField = await Field.findById(id);
 
-    if (currentPublication && currentPublication.photo) {
-      const photoPath = currentPublication.photo;
+    if (currentField && currentField.photo) {
+      const photoPath = currentField.photo;
       const photoWithoutExt = photoPath.substring(
         0,
         photoPath.lastIndexOf('.')
